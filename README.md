@@ -4,6 +4,8 @@
 
 **Production:** https://ai-for-developers-project-386-5uwg.onrender.com
 
+_Auto-deploy test_
+
 ## Архитектура
 
 ```
