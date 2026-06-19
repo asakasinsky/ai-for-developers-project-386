@@ -4,7 +4,12 @@
 
 **Production:** https://ai-for-developers-project-386-5uwg.onrender.com
 
-_Auto-deploy test_
+### Deploy
+
+Автодеплой при пуше в `main` настроен. Можно также запустить вручную:
+```bash
+curl -X POST "https://api.render.com/deploy/srv-d8qslfreo5us73ckiieg?key=9mluw23LDi8"
+```
 
 ## Архитектура
 
