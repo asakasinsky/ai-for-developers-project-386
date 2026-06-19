@@ -3,3 +3,4 @@ __pycache__/
 .env
 booking.db
 _spec/
+.DS_Store
