@@ -6,7 +6,9 @@
 
 ### Deploy
 
-Автодеплой при пуше в `main` настроен. Можно также запустить вручную:
+Автодеплой при пуше в `main` настроен. GitHub webhook запускает Render deploy на каждый push.
+
+Можно также запустить вручную:
 ```bash
 curl -X POST "https://api.render.com/deploy/srv-d8qslfreo5us73ckiieg?key=9mluw23LDi8"
 ```
