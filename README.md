@@ -121,6 +121,8 @@ cd frontend && VITE_API_BASE=http://localhost:3000 npm run dev
 cd frontend && npm run test:e2e
 ```
 
+
+
 ### Тестовые сценарии
 
 | Файл | Описание |
