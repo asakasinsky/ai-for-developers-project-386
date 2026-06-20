@@ -35,8 +35,14 @@ jobs:
       - name: Install Playwright browsers
         run: cd frontend && npx playwright install --with-deps chromium
 
+      - name: Start backend server
+        run: cd backend && uvicorn main:app --host 0.0.0.0 --port 3000 &
+        env:
+          PORT: 3000
+
       - name: Run E2E tests
         run: cd frontend && npx playwright test
         env:
           E2E_BASE_URL: http://localhost:5173
           CI: true
+          VITE_API_BASE: http://localhost:3000
