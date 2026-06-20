@@ -7,6 +7,12 @@ from pydantic import BaseModel, Field
 
 app = FastAPI(title="Calendar Booking API", version="1.0.0")
 
+# --- Root endpoint for health check ---
+
+@app.get("/")
+def root():
+    return {"status": "ok", "service": "Calendar Booking API"}
+
 # --- Models ---
 
 class EventType(BaseModel):
