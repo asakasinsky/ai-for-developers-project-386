@@ -24,4 +24,4 @@ jobs:
         run: npm install -g release-please
 
       - name: Run release-please
-        run: release-please release-pr --config-file=release-please-config.json --token=${{ secrets.GITHUB_TOKEN }}
+        run: release-please release-pr --config-file=release-please-config.json --repo-url=https://github.com/asakasinsky/ai-for-developers-project-386 --token=${{ secrets.GITHUB_TOKEN }}
