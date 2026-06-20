@@ -1,0 +1,10 @@
+{
+  "name": "ai-for-developers-project-386",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Calendar Booking System",
+  "workspaces": [
+    "frontend"
+  ],
+  "devDependencies": {}
+}

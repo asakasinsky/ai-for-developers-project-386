@@ -1,11 +1,12 @@
 {
+  "$schema": "https://github.com/googleapis/release-please/raw/main/schemas/config-schema.json",
+  "release-type": "node",
+  "include-component-in-tag": false,
   "packages": {
-    "frontend": {
+    ".": {
       "package-name": "frontend",
-      "changelog-path": "CHANGELOG.md",
-      "release-type": "node",
-      "bump-minor-pre-major": false,
-      "bump-patch-for-minor-pre-major": false
+      "changelog-path": "frontend/CHANGELOG.md",
+      "release-type": "node"
     }
   }
 }
