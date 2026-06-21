@@ -17,14 +17,14 @@ test.describe('Guest Flow', () => {
 
     await page.getByRole('button', { name: /Continue to Booking/i }).click();
 
-    await expect(page.locator('h2')).toContainText('Complete Your Booking', { timeout: 5000 });
+    await expect(page.locator('h2').first()).toContainText('Complete Your Booking', { timeout: 5000 });
 
     await page.fill('input#name', 'John Doe');
     await page.fill('input#email', 'john@example.com');
 
     await page.getByRole('button', { name: /Confirm Booking/i }).click();
 
-    await expect(page.locator('h2')).toContainText('Booking Confirmed', { timeout: 5000 });
+    await expect(page.locator('h2').first()).toContainText('Booking Confirmed', { timeout: 5000 });
   });
 
   test('should display event types on home page', async ({ page }) => {
