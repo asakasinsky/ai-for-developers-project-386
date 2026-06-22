@@ -28,7 +28,7 @@ app.add_middleware(
 frontend_dist = os.path.join(os.path.dirname(__file__), "..", "frontend", "dist")
 
 if os.path.exists(frontend_dist):
-    app.mount("/assets", StaticFiles(directory=frontend_dist), name="static")
+    app.mount("/assets", StaticFiles(directory=os.path.join(frontend_dist, "assets")), name="static")
 
     @app.get("/")
     def root():

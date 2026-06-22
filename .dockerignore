@@ -4,6 +4,6 @@ __pycache__
 .gitignore
 .env
 *.md
-node_modules
+frontend/node_modules
 .vscode
 .DS_Store
