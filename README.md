@@ -8,48 +8,54 @@
 
 Автодеплой при пуше в `main` настроен. GitHub webhook запускает Render deploy на каждый push.
 
-Можно также запустить вручную:
-```bash
-curl -X POST "https://api.render.com/deploy/srv-d8qslfreo5us73ckiieg?key=9mluw23LDi8"
-```
-
 ## Архитектура
 
 ```
-┌──────────────┐      ┌─────────────┐     ┌─────────────┐
-│   Frontend   │────▶│   Backend   │     │    Prism    │
-│  (Vite+React)│      │  (FastAPI)  │     │   (mock)    │
-└──────────────┘      └─────────────┘     └─────────────┘
+┌────────────────────────────┐
+│     Docker Container       │
+│  ┌──────────┐ ┌──────────┐ │
+│  │  Frontend │ │  Backend │ │
+│  │ (Static)  │ │ (FastAPI)│ │
+│  └─────┬────┘ └─────┬────┘ │
+│        └─────┬─────┘      │
+│              ▼            │
+│         Port 8000         │
+└────────────────────────────┘
 ```
 
-- **Frontend** — Vite + React + TypeScript + shadcn/ui. Работает только через API.
-- **Backend** — FastAPI. Хранит данные в памяти.
-- **Prism** — Опционально, для локального мока API во время разработки.
+- **Frontend** — Vite + React + TypeScript + shadcn/ui. Обслуживается как статика через FastAPI.
+- **Backend** — FastAPI. Хранит данные в памяти, отдаёт frontend статику и обрабатывает SPA fallback.
 
-## Быстрый старт
+## Локальный запуск
 
-### Backend
+### Docker (рекомендуется)
+
+```bash
+# Собрать образ
+docker build -t calendar-booking .
+
+# Запустить (frontend + backend на порту 8000)
+docker run -d -p 8000:8000 --name calendar-test calendar-booking
+
+# Открыть http://localhost:8000
+```
+
+### Backend отдельно
 
 ```bash
 cd backend
 pip install -r requirements.txt
-uvicorn main:app --port 3000
+uvicorn main:app --port 8000
+# Открой http://localhost:8000/static/frontend/dist/index.html или /
 ```
 
-### Frontend (с backend)
+### Frontend для разработки
 
 ```bash
 cd frontend
 npm install
-VITE_API_BASE=http://localhost:3000 npm run dev
-```
-
-### Frontend (с моком Prism)
-
-```bash
-cd frontend
-npm install
-npm run dev:mock
+npm run dev
+# Откроется на http://localhost:5173
 ```
 
 ## API Endpoints
@@ -67,7 +73,7 @@ npm run dev:mock
 ```
 .
 ├── backend/
-│   ├── main.py           # FastAPI приложение
+│   ├── main.py           # FastAPI приложение + frontend serving
 │   └── requirements.txt
 ├── frontend/
 │   ├── src/
@@ -75,10 +81,9 @@ npm run dev:mock
 │   │   ├── components/   # UI компоненты (shadcn)
 │   │   ├── pages/        # Страницы
 │   │   └── lib/          # Утилиты
-│   ├── prism.mock.json   # OpenAPI спецификация для Prism
-│   └── ...
-├── spec/
-│   └── booking-api.tsp   # TypeSpec контракт
+│   └── dist/             # Собранный frontend (в гите)
+├── Dockerfile            # Собирает frontend + backend в один образ
+├── docker-compose.yml    # (опционально) для dev
 └── README.md
 ```
 
@@ -86,11 +91,11 @@ npm run dev:mock
 
 ### Guest (бронирование)
 
-1. Открывает `/` — видит список типов событий
-2. Выбирает тип — попадает на `/book/:id`
-3. Видит доступные слоты на 14 дней
+1. Открывает `/` — видит лендинг с кнопкой "Записаться"
+2. Переходит на `/book` — выбирает длительность (30/60/90 мин)
+3. На `/book/:duration` — видит доступные слоты на 14 дней
 4. Выбирает слот → форма ввода данных
-5. Отправляет → получает подтверждение
+5. Отправляет → получает подтверждение на `/book/:duration/confirm`
 
 ### Owner (просмотр)
 
@@ -111,26 +116,20 @@ Playwright E2E тесты пользовательских сценариев.
 ### Запуск тестов
 
 ```bash
-# Терминал 1: Запустить backend
-cd backend && uvicorn main:app --port 3000
+# Терминал 1: Запустить Docker
+docker run -d -p 8000:8000 calendar-booking
 
-# Терминал 2: Запустить frontend
-cd frontend && VITE_API_BASE=http://localhost:3000 npm run dev
-
-# Терминал 3: Запустить тесты
+# Терминал 2: Запустить тесты
 cd frontend && npm run test:e2e
 ```
-
-
 
 ### Тестовые сценарии
 
 | Файл | Описание |
 |------|----------|
 | `e2e/tests/guest-flow.spec.ts` | Полный сценарий бронирования гостем |
-| `e2e/tests/conflict-handling.spec.ts` | Обработка конфликта занятых слотов |
 | `e2e/tests/owner-view.spec.ts` | Просмотр бронирований владельцем |
 
 ### CI/CD
 
-GitHub Actions workflow (`.github/workflows/tests.yml`) запускает E2E тесты при пуше в `main` и при PR.
+GitHub Actions workflow (`.github/workflows/tests.yml`) запускает E2E тесты при пуше в `main`.
