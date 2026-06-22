@@ -118,11 +118,12 @@ def get_available_slots(event_type_id: str):
     while current_time < end_date:
         if current_time.weekday() < 5:
             slot_start = current_time
-            slot_end = slot_start + timedelta(minutes=event_type.durationMinutes)
-
+            slot_end = slot_start + timedelta(minutes=30)
+            
+            # Check if this 30-min slot itself overlaps with any existing booking
             is_available = not any(
-                slot_start < booking.endTime and slot_end > booking.startTime
-                for booking in bookings_db
+                slot_start < existing_booking.endTime and slot_end > existing_booking.startTime
+                for existing_booking in bookings_db
             )
 
             slots.append(TimeSlot(
