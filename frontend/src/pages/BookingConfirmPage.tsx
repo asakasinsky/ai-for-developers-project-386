@@ -8,11 +8,7 @@ import { Label } from '@/components/ui/label'
 import { api } from '@/api/client'
 import type { EventType, TimeSlot } from '@/api/types'
 
-const durationToEventType: Record<string, string> = {
-  '30': 'consultation',
-  '60': 'demo',
-  '90': 'strategy',
-}
+
 
 const eventTypeNames: Record<string, string> = {
   'consultation': 'Короткая встреча (30 мин)',

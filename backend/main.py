@@ -4,23 +4,42 @@ from uuid import uuid4
 
 from fastapi import FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
+
+import os
 
 app = FastAPI(title="Calendar Booking API", version="1.0.0")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
+    allow_origins=[
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+        "https://ai-for-developers-project-386-5uwg.onrender.com",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# --- Root endpoint for health check ---
+# --- Serve frontend static files ---
+frontend_dist = os.path.join(os.path.dirname(__file__), "..", "frontend", "dist")
 
-@app.get("/")
-def root():
-    return {"status": "ok", "service": "Calendar Booking API"}
+if os.path.exists(frontend_dist):
+    app.mount("/assets", StaticFiles(directory=frontend_dist), name="static")
+
+    @app.get("/")
+    def root():
+        return FileResponse(os.path.join(frontend_dist, "index.html"))
+
+    @app.get("/{path:path}")
+    async def serve_spa(path: str):
+        for prefix in ["event-types", "availability", "bookings"]:
+            if path.startswith(prefix):
+                raise HTTPException(status_code=404)
+        return FileResponse(os.path.join(frontend_dist, "index.html"))
 
 # --- Models ---
 

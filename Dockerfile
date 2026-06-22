@@ -2,6 +2,13 @@ FROM python:3.12-slim
 
 WORKDIR /app
 
+RUN apt-get update && apt-get install -y nodejs npm curl && rm -rf /var/lib/apt/lists/*
+
+COPY frontend/package*.json frontend/
+WORKDIR /app/frontend
+RUN npm ci && npm run build
+WORKDIR /app
+
 COPY backend/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 

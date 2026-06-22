@@ -199,7 +199,7 @@ export function SchedulePage() {
                   const isAvailable = slot.available
                   const isInRange = isSlotInRange(groupIdx, slotIdx)
                   const isInSelRange = isSlotInSelectedRange(groupIdx, slotIdx)
-                  const rangeStatus = getRangeStatus(groupIdx, slotIdx)
+                  const rangeStatus = getRangeStatus(groupIdx)
                   const selRangeStatus = isSelectedRangeAvailable(groupIdx)
 
                   const canSelect = isAvailable && isRangeValidForSlot(groupIdx, slotIdx)
