@@ -8,7 +8,7 @@ test.describe('Slot Conflict Handling', () => {
 
     const slotTime = tomorrow.toISOString();
 
-    const response = await request.post('http://localhost:3000/bookings', {
+    const response = await request.post('http://localhost:8000/bookings', {
       data: {
         eventTypeId: 'consultation',
         guestName: 'First Guest',
@@ -19,18 +19,18 @@ test.describe('Slot Conflict Handling', () => {
 
     expect(response.status()).toBe(201);
 
-    await page.goto(`/book/consultation`);
+    await page.goto(`/book/consultation/schedule`);
 
-    const slotButton = page.locator(`button:has-text("${tomorrow.getHours()}:")`).first();
+    const slotButton = page.locator(`button:has-text("${String(tomorrow.getHours()).padStart(2, '0')}:00")`).first();
     if (await slotButton.isVisible()) {
       await slotButton.click();
-      await page.getByRole('button', { name: /Continue to Booking/i }).click();
+      await page.getByRole('button', { name: /Продолжить/i }).click();
 
       await page.fill('input#name', 'Second Guest');
       await page.fill('input#email', 'second@example.com');
-      await page.getByRole('button', { name: /Confirm Booking/i }).click();
+      await page.getByRole('button', { name: /Подтвердить запись/i }).click();
 
-      await expect(page.getByText(/no longer available/i)).toBeVisible();
+      await expect(page.getByText(/уже занято/i)).toBeVisible();
     }
   });
 
@@ -41,7 +41,7 @@ test.describe('Slot Conflict Handling', () => {
 
     const slotTime = tomorrow.toISOString();
 
-    await request.post('http://localhost:3000/bookings', {
+    await request.post('http://localhost:8000/bookings', {
       data: {
         eventTypeId: 'consultation',
         guestName: 'First Booker',
@@ -50,7 +50,7 @@ test.describe('Slot Conflict Handling', () => {
       },
     });
 
-    const conflictResponse = await request.post('http://localhost:3000/bookings', {
+    const conflictResponse = await request.post('http://localhost:8000/bookings', {
       data: {
         eventTypeId: 'consultation',
         guestName: 'Second Booker',

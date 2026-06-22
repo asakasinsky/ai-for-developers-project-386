@@ -6,7 +6,7 @@ test.describe('Owner View', () => {
     bookingDate.setDate(bookingDate.getDate() + 3);
     bookingDate.setHours(11, 0, 0, 0);
 
-    const response = await request.post('http://localhost:3000/bookings', {
+    const response = await request.post('http://localhost:8000/bookings', {
       data: {
         eventTypeId: 'demo',
         guestName: 'Test Guest',

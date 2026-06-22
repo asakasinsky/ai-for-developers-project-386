@@ -126,7 +126,9 @@ export function SchedulePage() {
 
   const isRangeValidForSlot = (groupIdx: number, slotIdx: number): boolean => {
     const group = groupedSlots[groupIdx]
-    for (let i = slotIdx; i < Math.min(slotIdx + neededSlots, group.slots.length); i++) {
+    // Check if there are enough slots remaining in the day
+    if (slotIdx + neededSlots > group.slots.length) return false
+    for (let i = slotIdx; i < slotIdx + neededSlots; i++) {
       if (!group.slots[i].available) return false
     }
     return true
