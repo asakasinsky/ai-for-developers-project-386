@@ -122,7 +122,7 @@ def get_available_slots(event_type_id: str):
             slot_end = slot_start + timedelta(minutes=event_type.durationMinutes)
 
             is_available = not any(
-                booking.startTime == slot_start
+                slot_start < booking.endTime and slot_end > booking.startTime
                 for booking in bookings_db
             )
 
@@ -146,8 +146,11 @@ def create_booking(request: CreateBookingRequest):
 
     event_type = event_types_db[request.eventTypeId]
 
+    booking_start = request.startTime
+    booking_end = booking_start + timedelta(minutes=event_type.durationMinutes)
+
     existing_booking = next(
-        (b for b in bookings_db if b.startTime == request.startTime),
+        (b for b in bookings_db if b.startTime < booking_end and b.endTime > booking_start),
         None
     )
     if existing_booking:

@@ -30,6 +30,7 @@ function formatDate(dateStr: string): string {
     weekday: 'long',
     day: 'numeric',
     month: 'long',
+    timeZone: 'UTC',
   })
 }
 
@@ -37,6 +38,7 @@ function formatTime(dateStr: string): string {
   return new Date(dateStr).toLocaleTimeString('ru-RU', {
     hour: '2-digit',
     minute: '2-digit',
+    timeZone: 'UTC',
   })
 }
 

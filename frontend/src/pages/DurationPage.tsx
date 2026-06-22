@@ -1,27 +1,16 @@
 import { useNavigate } from 'react-router-dom'
 import { ChevronLeft } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 
 const durations = [
-  { id: '30', minutes: 30, name: 'Короткая', description: '30 минут' },
-  { id: '60', minutes: 60, name: 'Стандартная', description: '1 час' },
-  { id: '90', minutes: 90, name: 'Длительная', description: '1.5 часа' },
+  { id: '30', minutes: 30, name: '30 минут', description: 'Быстрый созвон' },
+  { id: '60', minutes: 60, name: '60 минут', description: 'Стандартная встреча' },
+  { id: '90', minutes: 90, name: '90 минут', description: 'Детальная встреча' },
 ]
 
 export function DurationPage() {
   const navigate = useNavigate()
-
-  const handleSelect = (value: string) => {
-    navigate(`/book/${value}/schedule`)
-  }
 
   return (
     <div className="container mx-auto py-8 px-4">
@@ -30,44 +19,24 @@ export function DurationPage() {
         На главную
       </Button>
 
-      <div className="max-w-md mx-auto">
-        <Card>
-          <CardHeader className="text-center">
-            <CardTitle className="text-2xl">Выберите длительность</CardTitle>
-            <CardDescription>
-              Сколько времени вам нужно для встречи?
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <Select onValueChange={handleSelect}>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Выберите длительность..." />
-              </SelectTrigger>
-              <SelectContent>
-                {durations.map((d) => (
-                  <SelectItem key={d.id} value={d.id}>
-                    {d.name} ({d.description})
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+      <div className="text-center mb-8">
+        <h1 className="text-3xl font-bold mb-2">Выберите длительность</h1>
+        <p className="text-muted-foreground">Сколько времени вам нужно?</p>
+      </div>
 
-            <div className="grid grid-cols-3 gap-4 text-center text-sm">
-              <div className="p-3 rounded-lg bg-muted">
-                <div className="font-semibold">30 мин</div>
-                <div className="text-xs text-muted-foreground">Быстрый созвон</div>
-              </div>
-              <div className="p-3 rounded-lg bg-muted">
-                <div className="font-semibold">60 мин</div>
-                <div className="text-xs text-muted-foreground">Стандартная</div>
-              </div>
-              <div className="p-3 rounded-lg bg-muted">
-                <div className="font-semibold">90 мин</div>
-                <div className="text-xs text-muted-foreground">Детальная</div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+      <div className="grid gap-4 md:grid-cols-3 max-w-2xl mx-auto">
+        {durations.map((duration) => (
+          <Card
+            key={duration.id}
+            className="cursor-pointer hover:border-primary transition-colors"
+            onClick={() => navigate(`/book/${duration.id}/schedule`)}
+          >
+            <CardContent className="pt-6 text-center">
+              <h2 className="text-xl font-semibold mb-1">{duration.name}</h2>
+              <p className="text-sm text-muted-foreground">{duration.description}</p>
+            </CardContent>
+          </Card>
+        ))}
       </div>
     </div>
   )
